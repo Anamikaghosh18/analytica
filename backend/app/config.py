@@ -3,8 +3,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
 
 class Settings(BaseSettings):
-    # Model fields - Pydantic will automatically look for these (case-insensitive)
-    # in environment variables and .env file
     database_url: str = "postgresql://localhost:5432/analytica"
     database_url_internal: Optional[str] = None
 
@@ -15,6 +13,8 @@ class Settings(BaseSettings):
     
     api_key_header: str = "X-API-Key"
     
+    google_client_id: Optional[str] = os.getenv("GOOGLE_CLIENT_ID", "your-google-client-id-here")
+
     # Environment
     environment: str = "development"
     
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=False,
-        extra="ignore" # Ignore extra fields in .env
+        extra="ignore"
     )
 
     def get_database_url(self) -> str:
@@ -34,9 +34,8 @@ class Settings(BaseSettings):
             return self.database_url_internal or self.database_url
         return self.database_url
 
-# Create singleton instance
+
 settings = Settings()
 
-# Patch the settings with the correct URL if in production
 if settings.environment == "production" and settings.database_url_internal:
     settings.database_url = settings.database_url_internal
