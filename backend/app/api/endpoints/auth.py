@@ -4,7 +4,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User
-from app.schemas import UserCreate, UserResponse, Token
+from app.schemas import UserCreate, UserResponse, Token, PasswordUpdate
+from app.api.deps import get_current_user
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from app.core.security import get_password_hash, verify_password, create_access_token, settings
@@ -13,6 +14,8 @@ router = APIRouter()
 
 @router.post("/google-login", response_model=Token)
 def google_login(token_id: str, db: Session = Depends(get_db)):
+    # Diagnostic: Ensure settings are loaded
+    print(f"🔍 DEBUG: Google Client ID in Backend: {settings.google_client_id[:10] if settings.google_client_id else 'MISSING'}...")
     try:
         # Verify the Google ID token
         id_info = id_token.verify_oauth2_token(
@@ -51,6 +54,17 @@ def google_login(token_id: str, db: Session = Depends(get_db)):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid Google token",
         )
+
+@router.post("/set-password")
+def set_password(
+    data: PasswordUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    current_user.hashed_password = get_password_hash(data.new_password)
+    db.add(current_user)
+    db.commit()
+    return {"message": "Password updated successfully"}
 
 @router.post("/register", response_model=UserResponse)
 def register(user_in: UserCreate, db: Session = Depends(get_db)):

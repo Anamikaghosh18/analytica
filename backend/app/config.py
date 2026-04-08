@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     
     api_key_header: str = "X-API-Key"
     
-    google_client_id: Optional[str] = os.getenv("GOOGLE_CLIENT_ID", "your-google-client-id-here")
+    google_client_id: Optional[str] = os.getenv("GOOGLE_CLIENT_ID")
 
     # Environment
     environment: str = "development"
@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     max_concurrent_checks: int = 5
     
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", "../.env"),
         case_sensitive=False,
         extra="ignore"
     )

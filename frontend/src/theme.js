@@ -1,54 +1,43 @@
 import { createTheme, alpha } from '@mui/material/styles';
 
-// Material Design 3 (M3) inspired professional charcoal theme
 const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#D0E4FF', // Light blue tonal from M3
-      container: '#004A77',
-      onContainer: '#D0E4FF',
-    },
-    secondary: {
-      main: '#BBC7DB',
-      container: '#3E4858',
+      main: '#007AFF', // Apple System Blue
     },
     background: {
-      default: '#0F1113', // Very dark charcoal
-      paper: '#1A1C1E',   // M3 Surface color
+      default: '#0F172A', // Deep Slate-Charcoal (Softer than pure black)
+      paper: '#1E293B',   // Lighter slate surface
     },
-    surfaceVariant: '#43474E',
-    outline: '#8D9199',
-    error: {
-      main: '#FFB4AB',
+    text: {
+      primary: '#F8FAFC',
+      secondary: '#94A3B8',
     },
+    divider: alpha('#FFFFFF', 0.08),
   },
   typography: {
-    fontFamily: '"Outfit", "Inter", sans-serif',
-    h1: { fontSize: '3rem', fontWeight: 600, letterSpacing: -0.5 },
-    h2: { fontSize: '2.25rem', fontWeight: 600, letterSpacing: -0.5 },
-    h3: { fontSize: '1.75rem', fontWeight: 600 },
-    h4: { fontSize: '1.5rem', fontWeight: 600 },
-    h5: { fontSize: '1.25rem', fontWeight: 600 },
-    h6: { fontSize: '1.1rem', fontWeight: 600 },
-    button: { textTransform: 'none', fontWeight: 500, letterSpacing: 0.1 },
+    fontFamily: '"SF Pro Text", "Inter", -apple-system, sans-serif',
+    h1: { fontWeight: 800, letterSpacing: '-0.03em' },
+    h2: { fontWeight: 700, letterSpacing: '-0.02em' },
+    h3: { fontWeight: 700 },
+    h4: { fontWeight: 600 },
+    button: { textTransform: 'none', fontWeight: 700, letterSpacing: '0.01em' },
   },
   shape: {
-    borderRadius: 16, // M3 medium rounded corners
+    borderRadius: 16, // Softer curves for "friendly" feel
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 24, // M3 fully rounded buttons
-          padding: '10px 24px',
-          boxShadow: 'none',
+          borderRadius: 12,
+          padding: '12px 24px',
+          boxShadow: `0 4px 14px 0 ${alpha('#000000', 0.4)}`,
           '&:hover': {
-            boxShadow: 'none',
+            boxShadow: `0 6px 20px 0 ${alpha('#007AFF', 0.2)}`,
+            transform: 'translateY(-1px)',
           },
-        },
-        contained: {
-          fontWeight: 600,
         },
       },
     },
@@ -56,23 +45,8 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          borderRadius: 20, // M3 Large rounded corners for surfaces
-        },
-      },
-      defaultProps: {
-        elevation: 0,
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#1A1C1E',
-          border: '1px solid #333',
-          transition: 'transform 0.2s ease-in-out, border-color 0.2s',
-          '&:hover': {
-            borderColor: '#555',
-            transform: 'translateY(-2px)',
-          },
+          backdropFilter: 'blur(12px)',
+          border: `1px solid ${alpha('#FFFFFF', 0.1)}`,
         },
       },
     },
@@ -81,6 +55,8 @@ const theme = createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             borderRadius: 12,
+            backgroundColor: alpha('#FFFFFF', 0.03),
+            '&:hover fieldset': { borderColor: alpha('#FFFFFF', 0.2) },
           },
         },
       },

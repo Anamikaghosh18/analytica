@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      // In a real app, you might want to fetch user profile here
       setUser({ token }); 
     }
     setLoading(false);
@@ -29,6 +28,20 @@ export const AuthProvider = ({ children }) => {
     return response.data;
   };
 
+  const googleLogin = async (tokenId) => {
+    try {
+      const response = await api.post('/auth/google-login?token_id=' + tokenId);
+      const { access_token } = response.data;
+      
+      localStorage.setItem('token', access_token);
+      setUser({ token: access_token });
+      return response.data;
+    } catch (error) {
+      console.error("❌ AuthContext: Google Login Failed:", error.response?.data || error.message);
+      throw error;
+    }
+  };
+
   const register = async (email, password) => {
     return await api.post('/auth/register', { email, password });
   };
@@ -39,7 +52,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, googleLogin, register, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

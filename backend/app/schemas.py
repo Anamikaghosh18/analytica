@@ -23,6 +23,9 @@ class UserResponse(UserBase):
     class Config:
         from_attributes = True
 
+class PasswordUpdate(BaseModel):
+    new_password: str
+
 # Monitor schemas
 class MonitorCreate(BaseModel):
     name: str
