@@ -19,6 +19,14 @@ def migrate():
             logger.info("Adding last_checked to api_monitors")
             conn.execute(text("ALTER TABLE api_monitors ADD COLUMN last_checked TIMESTAMP"))
 
+        if 'headers' not in columns:
+            logger.info("Adding headers to api_monitors")
+            conn.execute(text("ALTER TABLE api_monitors ADD COLUMN headers TEXT"))
+
+        if 'is_public' not in columns:
+            logger.info("Adding is_public to api_monitors")
+            conn.execute(text("ALTER TABLE api_monitors ADD COLUMN is_public BOOLEAN DEFAULT FALSE"))
+
         # 2. Update api_checks table
         columns = [c['name'] for c in inspector.get_columns('api_checks')]
         if 'node_id' not in columns:

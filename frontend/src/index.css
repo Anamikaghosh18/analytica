@@ -13,12 +13,10 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-content: center;
-  min-width: 320px;
   min-height: 100vh;
   background: #000000;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Premium Studio Noise */
@@ -44,9 +42,12 @@ body {
   background: radial-gradient(circle at 50% -20%, #007AFF15, transparent 50%),
               radial-gradient(circle at -10% 50%, #00ffc308, transparent 40%);
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
 }
 
 #root {
   width: 100%;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }

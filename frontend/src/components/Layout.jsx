@@ -68,14 +68,14 @@ const Layout = ({ children }) => {
 
   if (!user) {
     return (
-      <Box sx={{ minHeight: '100vh', bgcolor: '#000000' }}>
+      <Box sx={{ minHeight: '100vh', bgcolor: 'transparent' }}>
         {children}
       </Box>
     );
   }
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#050505' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: alpha('#050505', 0.8) }}>
       <Sidebar />
 
       {/* Main column */}

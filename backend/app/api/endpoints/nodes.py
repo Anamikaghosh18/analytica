@@ -34,3 +34,13 @@ def create_node(node: NodeCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_node)
     return db_node
+
+@router.patch("/{node_id}/toggle")
+def toggle_node(node_id: int, db: Session = Depends(get_db)):
+    node = db.query(MonitoringNode).filter(MonitoringNode.id == node_id).first()
+    if not node:
+        raise HTTPException(status_code=404, detail="Node not found")
+    node.is_active = not node.is_active
+    db.commit()
+    db.refresh(node)
+    return node

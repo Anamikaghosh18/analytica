@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, alpha } from '@mui/material';
-import { LayoutDashboard, Globe, Shield, BarChart3, Settings, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, Globe, Shield, BarChart3, Settings, HelpCircle, Activity } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Logo from './Logo';
 
@@ -11,8 +11,6 @@ const Sidebar = () => {
   const menuItems = [
     { text: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/' },
     { text: 'Analytics', icon: <BarChart3 size={18} />, path: '/analytics' },
-    { text: 'Network', icon: <Globe size={18} />, path: '/network' },
-    { text: 'Security', icon: <Shield size={18} />, path: '/security' },
   ];
 
   return (

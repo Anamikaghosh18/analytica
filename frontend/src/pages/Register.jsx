@@ -54,7 +54,7 @@ const Register = () => {
       display: 'flex', 
       flexDirection: { xs: 'column', md: 'row' }, 
       height: '100vh',
-      bgcolor: '#000000',
+      bgcolor: 'transparent',
       color: '#FFFFFF',
       overflow: 'hidden',
       position: 'relative'
@@ -144,7 +144,7 @@ const Register = () => {
         px: { xs: 3, md: 8 },
         position: 'relative',
         zIndex: 2,
-        bgcolor: '#000'
+        bgcolor: 'transparent',
       }}>
         <Box sx={{ width: '100%', maxWidth: 400 }}>
           <Box sx={{ mb: 4 }}>

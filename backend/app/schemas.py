@@ -19,6 +19,8 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id: int
     is_active: bool
+    api_key: Optional[str] = None
+    notification_prefs: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -47,6 +49,8 @@ class MonitorCreate(BaseModel):
     url: str
     method: Optional[str] = "GET"
     check_interval_seconds: Optional[int] = 60
+    headers: Optional[dict] = None
+    is_public: Optional[bool] = False
 
 class MonitorResponse(BaseModel):
     id: int
@@ -54,6 +58,8 @@ class MonitorResponse(BaseModel):
     url: str
     method: str
     check_interval_seconds: int
+    headers: Optional[str] = None
+    is_public: bool
     owner_id: int
 
     class Config:

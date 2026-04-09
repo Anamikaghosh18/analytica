@@ -30,7 +30,9 @@ async def check_monitor(monitor_id: int):
         try:
             async with httpx.AsyncClient(timeout=10) as client:
                 method = monitor.method.upper() if monitor.method else "GET"
-                response = await client.request(method, monitor.url)
+                import json
+                headers = json.loads(monitor.headers) if monitor.headers else {}
+                response = await client.request(method, monitor.url, headers=headers)
                 status_code = response.status_code
                 response_time = (time.time() - start) * 1000
                 success = status_code < 400

@@ -46,7 +46,7 @@ const Login = () => {
       display: 'flex', 
       flexDirection: { xs: 'column', md: 'row' }, 
       height: '100vh',
-      bgcolor: '#000000',
+      bgcolor: 'transparent',
       color: '#FFFFFF',
       overflow: 'hidden',
       position: 'relative'
@@ -133,7 +133,7 @@ const Login = () => {
         alignItems: 'center', 
         justifyContent: 'center',
         px: { xs: 3, md: 8 },
-        bgcolor: '#000',
+        bgcolor: 'transparent',
         position: 'relative'
       }}>
 

@@ -99,3 +99,28 @@ def login_for_access_token(
         subject=user.id, email=user.email, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+    
+@router.post("/settings")
+def update_settings(
+    data: dict,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    import json
+    if "notification_prefs" in data:
+        current_user.notification_prefs = json.dumps(data["notification_prefs"])
+    db.add(current_user)
+    db.commit()
+    return {"message": "Settings updated"}
+
+@router.post("/generate-key")
+def generate_api_key(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    import secrets
+    new_key = f"ana_live_{secrets.token_urlsafe(24)}"
+    current_user.api_key = new_key
+    db.add(current_user)
+    db.commit()
+    return {"api_key": new_key}

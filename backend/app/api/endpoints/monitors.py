@@ -14,11 +14,14 @@ def create_monitor(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    import json
     monitor = APIMonitor(
         name=data.name,
         url=data.url,
         method=data.method or "GET",
         check_interval_seconds=data.check_interval_seconds or 60,
+        headers=json.dumps(data.headers) if data.headers else None,
+        is_public=data.is_public if data.is_public is not None else False,
         owner_id=current_user.id
     )
     db.add(monitor)
