@@ -30,9 +30,17 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="API Monitor", lifespan=lifespan)
 
 # Enable CORS for frontend communication
+# NOTE: allow_origins=["*"] is INVALID when allow_credentials=True — browsers reject it.
+# List all origins explicitly (dev + prod).
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -25,7 +25,8 @@ import {
 import api from '../services/api';
 import BentoCard from '../components/BentoCard';
 
-const WS_URL = 'ws://127.0.0.1:8000/ws/telemetry';
+// WebSocket connects via Vite proxy (/ws → ws://127.0.0.1:8000/ws) to avoid CORS
+const WS_URL = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/ws/telemetry`;
 
 const StatusDot = ({ online }) => (
   <Box sx={{
@@ -268,7 +269,7 @@ const Dashboard = () => {
                 <Typography variant="h5" sx={{ fontWeight: 900, color: '#fff' }}>Site Inventory</Typography>
                 <IconButton onClick={() => setShowInventoryDrawer(false)} sx={{ color: alpha('#fff', 0.2) }}><X size={20} /></IconButton>
             </Box>
-            <TextField fullWidth placeholder="Search inventory..." value={monitorSearch} onChange={e => setMonitorSearch(e.target.value)} InputProps={{ startAdornment: <Search size={18} style={{ marginRight: 12, opacity: 0.2 }} />, sx: { bgcolor: alpha('#fff', 0.02), borderRadius: 2, mb: 4 } }} />
+            <TextField fullWidth placeholder="Search inventory..." value={monitorSearch} onChange={e => setMonitorSearch(e.target.value)} slotProps={{ input: { startAdornment: <Search size={18} style={{ marginRight: 12, opacity: 0.2 }} />, sx: { bgcolor: alpha('#fff', 0.02), borderRadius: 2, mb: 4 } } }} />
             
             <Box sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {filteredMonitors.map(m => (

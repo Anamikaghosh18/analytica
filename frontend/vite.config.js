@@ -7,9 +7,19 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
-    headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
-      'Cross-Origin-Embedder-Policy': 'unsafe-none',
-    }
-  }
+    proxy: {
+      // HTTP API — /api/* → http://127.0.0.1:8000/*
+      '/api': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      // WebSocket — /ws/* → ws://127.0.0.1:8000/ws/*
+      '/ws': {
+        target: 'ws://127.0.0.1:8000',
+        ws: true,
+        changeOrigin: true,
+      },
+    },
+  },
 })

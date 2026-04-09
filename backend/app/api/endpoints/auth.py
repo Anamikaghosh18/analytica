@@ -2,57 +2,75 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
+import requests as http_requests
 from app.database import get_db
 from app.models import User
 from app.schemas import UserCreate, UserResponse, Token, PasswordUpdate
 from app.api.deps import get_current_user
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
 from app.core.security import get_password_hash, verify_password, create_access_token, settings
 
 router = APIRouter()
 
-@router.post("/google-login", response_model=Token)
-def google_login(token_id: str, db: Session = Depends(get_db)):
-    # Diagnostic: Ensure settings are loaded
-    print(f"🔍 DEBUG: Google Client ID in Backend: {settings.google_client_id[:10] if settings.google_client_id else 'MISSING'}...")
-    try:
-        # Verify the Google ID token
-        id_info = id_token.verify_oauth2_token(
-            token_id, google_requests.Request(), settings.google_client_id
-        )
+# ── Request body schemas ────────────────────────────────────────────────────
+class GoogleLoginRequest(BaseModel):
+    access_token: str
 
-        # ID token is valid. Get the user's Google ID and email.
-        email = id_info['email']
-        
-        # Check if user already exists
+@router.post("/google-login", response_model=Token)
+def google_login(body: GoogleLoginRequest, db: Session = Depends(get_db)):
+    """
+    Accept a Google OAuth2 access_token (from useGoogleLogin implicit flow)
+    and exchange it for a platform JWT. Verification is done by calling
+    Google's userinfo endpoint — no GOOGLE_CLIENT_ID needed.
+    """
+    try:
+        # Verify the access token by fetching the user’s profile from Google
+        resp = http_requests.get(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            headers={"Authorization": f"Bearer {body.access_token}"},
+            timeout=10,
+        )
+        if resp.status_code != 200:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or expired Google access token",
+            )
+
+        user_info = resp.json()
+        email = user_info.get("email")
+        if not email or not user_info.get("email_verified"):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Google account email not verified",
+            )
+
+        # Find or create user
         user = db.query(User).filter(User.email == email).first()
-        
         if not user:
-            # Create a new user if they don't exist
-            # We generate a random password as it won't be used for Google login
             import secrets
             user = User(
                 email=email,
                 hashed_password=get_password_hash(secrets.token_urlsafe(32)),
-                is_active=True
+                is_active=True,
             )
             db.add(user)
             db.commit()
             db.refresh(user)
-            
-        # Create access token
+
+        # Issue platform JWT
         access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
         access_token = create_access_token(
             subject=user.id, email=email, expires_delta=access_token_expires
         )
         return {"access_token": access_token, "token_type": "bearer"}
 
-    except ValueError:
-        # Invalid token
+    except HTTPException:
+        raise
+    except Exception as exc:
+        print(f"❌ Google login error: {exc}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid Google token",
+            detail="Google authentication failed",
         )
 
 @router.post("/set-password")

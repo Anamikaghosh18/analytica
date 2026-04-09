@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_URL || '';
+
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
+  // In dev: requests go to /api and Vite proxies to localhost:8000 (no CORS)
+  // In prod: set VITE_API_URL to your deployed backend base URL
+  baseURL: BASE_URL ? BASE_URL : '/api',
 });
 
 // Add a request interceptor to attach the JWT token

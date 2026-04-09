@@ -28,9 +28,10 @@ export const AuthProvider = ({ children }) => {
     return response.data;
   };
 
-  const googleLogin = async (tokenId) => {
+  const googleLogin = async (accessToken) => {
     try {
-      const response = await api.post('/auth/google-login?token_id=' + tokenId);
+      // Send OAuth2 access_token in body; backend verifies via Google's userinfo API
+      const response = await api.post('/auth/google-login', { access_token: accessToken });
       const { access_token } = response.data;
       
       localStorage.setItem('token', access_token);

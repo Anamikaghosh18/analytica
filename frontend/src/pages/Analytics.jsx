@@ -156,7 +156,7 @@ const Analytics = () => {
         <BentoCard id="tour-ana-history" sx={{ gridColumn: 'span 12', p: 4, minHeight: 400, display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Typography variant="caption" sx={{ color: alpha('#FFFFFF', 0.6), fontWeight: 800 }}>AUDIT TRACE LOGS</Typography>
-                <TextField size="small" placeholder="Find result..." value={logSearch} onChange={(e) => setLogSearch(e.target.value)} InputProps={{ startAdornment: <Search size={16} style={{ marginRight: 8, opacity: 0.2 }} />, sx: { bgcolor: alpha('#FFFFFF', 0.02), borderRadius: 1.5, color: '#fff', fontSize: '0.8rem', width: 220 } }} />
+                <TextField size="small" placeholder="Find result..." value={logSearch} onChange={(e) => setLogSearch(e.target.value)} slotProps={{ input: { startAdornment: <Search size={16} style={{ marginRight: 8, opacity: 0.2 }} />, sx: { bgcolor: alpha('#FFFFFF', 0.02), borderRadius: 1.5, color: '#fff', fontSize: '0.8rem', width: 220 } } }} />
             </Box>
             
             {/* Scrollable Container with Max Height so it doesn't distord the card if empty */}

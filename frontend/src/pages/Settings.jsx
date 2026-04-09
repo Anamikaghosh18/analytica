@@ -136,8 +136,8 @@ const Settings = () => {
                     <Box sx={{ pt: 2 }}>
                         <Typography sx={{ color: alpha('#fff', 0.6), fontWeight: 900, fontSize: '0.7rem', mb: 3 }}>UPDATE PASSWORD</Typography>
                         <Stack spacing={3}>
-                            <TextField fullWidth type="password" variant="standard" placeholder="New Secure Password" value={newPassword} onChange={e => setNewPassword(e.target.value)} InputProps={{ sx: { color: '#fff', fontSize: '1rem', py: 1.5 } }} />
-                            <TextField fullWidth type="password" variant="standard" placeholder="Confirm Credentials" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} InputProps={{ sx: { color: '#fff', fontSize: '1rem', py: 1.5 } }} />
+                            <TextField fullWidth type="password" variant="standard" placeholder="New Secure Password" value={newPassword} onChange={e => setNewPassword(e.target.value)} slotProps={{ input: { sx: { color: '#fff', fontSize: '1rem', py: 1.5 } } }} />
+                            <TextField fullWidth type="password" variant="standard" placeholder="Confirm Credentials" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} slotProps={{ input: { sx: { color: '#fff', fontSize: '1rem', py: 1.5 } } }} />
                             <Button variant="contained" onClick={handleSetPassword} disabled={loading} startIcon={loading ? <CircularProgress size={16} color="inherit" /> : <Save size={18} />} sx={{ bgcolor: '#fff', color: '#000', fontWeight: 900, py: 1.5, borderRadius: 1, '&:hover': { bgcolor: alpha('#fff', 0.8) } }}>Provision New Credentials</Button>
                         </Stack>
                     </Box>

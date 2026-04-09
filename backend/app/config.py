@@ -1,4 +1,3 @@
-import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
 
@@ -12,8 +11,10 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     
     api_key_header: str = "X-API-Key"
-    
-    google_client_id: Optional[str] = os.getenv("GOOGLE_CLIENT_ID")
+
+    # Loaded from .env by pydantic-settings — do NOT use os.getenv() here,
+    # as that runs at import time before the .env file is parsed.
+    google_client_id: Optional[str] = None
 
     # Environment
     environment: str = "development"
