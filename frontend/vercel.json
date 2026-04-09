@@ -1,0 +1,22 @@
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://analytica-backend.onrender.com/$1" },
+    { "source": "/ws/(.*)", "destination": "wss://analytica-backend.onrender.com/ws/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "cross-origin"
+        }
+      ]
+    }
+  ]
+}

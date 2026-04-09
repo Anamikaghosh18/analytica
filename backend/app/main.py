@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import os
 from contextlib import asynccontextmanager
 from app.api.api import api_router
 from app.core.monitor_engine import start_monitoring
@@ -30,14 +31,17 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="API Monitor", lifespan=lifespan)
 
 # Enable CORS for frontend communication
-# NOTE: allow_origins=["*"] is INVALID when allow_credentials=True — browsers reject it.
 # List all origins explicitly (dev + prod).
 ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
 ]
+
+# Add production origins from environment variable
+env_origins = os.getenv("ALLOWED_ORIGINS")
+if env_origins:
+    ALLOWED_ORIGINS.extend([origin.strip() for origin in env_origins.split(",")])
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,

@@ -52,6 +52,7 @@ const Register = () => {
   const googleSignIn = useGoogleLogin({
     onSuccess: handleGoogleSuccess,
     onError: () => setError('Social entry failed'),
+    use_fedcm_for_prompt: true,
   });
 
   return (

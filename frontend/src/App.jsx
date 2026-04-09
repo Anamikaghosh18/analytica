@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
 import Analytics from './pages/Analytics';
+import Landing from './pages/Landing';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -24,10 +25,27 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Public Route Component (redirects to home if already logged in)
+const PublicRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+
+  if (user) {
+    return <Navigate to="/" />;
+  }
+
+  return children;
+};
+
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-// Diagnostic log (will show in browser console F12)
-console.log("💎 ANALYTICA DEBUG: Loaded Client ID:", GOOGLE_CLIENT_ID ? GOOGLE_CLIENT_ID.substring(0, 15) + "..." : "MISSING");
+// Dynamic Home Route
+const HomeRoute = () => {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  return user ? <Dashboard /> : <Landing />;
+};
 
 function App() {
   return (
@@ -40,14 +58,18 @@ function App() {
               <Routes>
                 <Route
                   path="/"
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  }
+                  element={<HomeRoute />}
                 />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={
+                  <PublicRoute>
+                    <Login />
+                  </PublicRoute>
+                } />
+                <Route path="/register" element={
+                  <PublicRoute>
+                    <Register />
+                  </PublicRoute>
+                } />
                 <Route
                   path="/settings"
                   element={

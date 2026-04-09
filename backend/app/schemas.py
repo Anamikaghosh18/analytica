@@ -64,3 +64,8 @@ class MonitorResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# Feedback schemas
+class FeedbackCreate(BaseModel):
+    email: Optional[str] = None
+    message: str

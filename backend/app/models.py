@@ -69,5 +69,10 @@ class Alert(Base):
     resolved = Column(Boolean, default=False)
     created_at = Column(DateTime, server_default=func.now())
 
-
+class Feedback(Base):
+    __tablename__ = "feedback"
     
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), nullable=True)
+    message = Column(String(2000), nullable=False)
+    created_at = Column(DateTime, server_default=func.now())

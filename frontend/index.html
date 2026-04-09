@@ -8,6 +8,29 @@
   </head>
   <body style="margin: 0; background: #000; overflow-x: hidden;">
     <div id="root"></div>
+    <script>
+      // Only apply restrictions if not in development
+      if (!['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+        // Disable right-click context menu
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Disable common DevTools keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+          // F12
+          if (e.key === 'F12') {
+            e.preventDefault();
+          }
+          // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U
+          if (e.ctrlKey && (e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase()) || e.key.toUpperCase() === 'U')) {
+            e.preventDefault();
+          }
+          // Cmd+Option+I (Mac)
+          if (e.metaKey && e.altKey && e.key.toUpperCase() === 'I') {
+            e.preventDefault();
+          }
+        });
+      }
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
