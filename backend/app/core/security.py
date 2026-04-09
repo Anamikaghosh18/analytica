@@ -6,7 +6,7 @@ from app.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def create_access_token(subject: Union[str, Any], expires_delta: timedelta = None) -> str:
+def create_access_token(subject: Union[str, Any], email: str = None, expires_delta: timedelta = None) -> str:
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
@@ -14,6 +14,9 @@ def create_access_token(subject: Union[str, Any], expires_delta: timedelta = Non
             minutes=settings.access_token_expire_minutes
         )
     to_encode = {"exp": expire, "sub": str(subject)}
+    if email:
+        to_encode["email"] = email
+        
     encoded_jwt = jwt.encode(
         to_encode, settings.secret_key, algorithm=settings.algorithm
     )

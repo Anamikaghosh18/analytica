@@ -56,8 +56,13 @@ const Register = () => {
       height: '100vh',
       bgcolor: '#000000',
       color: '#FFFFFF',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      position: 'relative'
     }}>
+      {/* Global Studio Effects */}
+      <div className="studio-noise" />
+      <div className="studio-glow" />
+
       {/* Left Panel: Visual Hero (60%) */}
       <Box sx={{ 
         flex: 1.5, 
@@ -69,20 +74,9 @@ const Register = () => {
         px: { md: 8, lg: 12 },
         py: { md: 6, lg: 8 },
         overflow: 'hidden',
-        borderRight: `1px solid ${alpha('#FFFFFF', 0.05)}`,
+        borderRight: `1px solid ${alpha('#FFFFFF', 0.08)}`,
         background: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0)',
         backgroundSize: '32px 32px',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0, left: 0, right: 0, bottom: 0,
-          background: 'radial-gradient(circle at 50% 50%, rgba(0, 122, 255, 0.05) 0%, transparent 70%)',
-          animation: 'pulse 10s infinite alternate ease-in-out',
-        },
-        '@keyframes pulse': {
-          '0%': { opacity: 0.5, transform: 'scale(1)' },
-          '100%': { opacity: 1, transform: 'scale(1.2)' },
-        }
       }}>
         {/* Animated Background Element */}
         <Box sx={{ 
@@ -92,52 +86,52 @@ const Register = () => {
           transform: 'translate(-50%, -50%)',
           width: '120%', 
           height: '120%',
-          opacity: 0.4,
+          opacity: 0.15,
           background: 'radial-gradient(circle at center, rgba(0, 122, 255, 0.1) 0%, transparent 60%)',
           pointerEvents: 'none'
         }} />
 
         <Box sx={{ my: 'auto', position: 'relative', zIndex: 1 }}>
-          <Stack spacing={3}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Logo size={42} />
-              <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: -1, color: alpha('#FFF', 0.9) }}>Analytica</Typography>
+          <Stack spacing={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
+              <Logo size={48} />
+              <Typography variant="h4" sx={{ fontWeight: 900, letterSpacing: -2, color: '#FFFFFF' }}>Analytica</Typography>
             </Box>
             
             <Typography variant="h1" sx={{ 
-              fontSize: { xs: '2rem', sm: '2.5rem', md: 'clamp(2.5rem, 5vw, 4.5rem)' }, 
+              fontSize: { xs: '1.5rem', sm: '2rem', md: 'clamp(2rem, 4vw, 3rem)' }, 
               fontWeight: 900, 
-              lineHeight: 1.2, 
+              lineHeight: 1.1, 
               letterSpacing: -3,
-              background: 'linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.4) 100%)',
+              background: 'linear-gradient(180deg, #FFFFFF 30%, rgba(255,255,255,0.1) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
-              Infrastructure<br />Monitoring.
+              Join the<br />Infrastructure.
             </Typography>
 
-            <Typography variant="h6" sx={{ color: alpha('#FFF', 0.4), maxWidth: 500, lineHeight: 1.6, fontWeight: 400 }}>
-              Real-time insights for your distributed network. 
-              Built for scale, designed for precision.
+            <Typography variant="body1" sx={{ color: alpha('#FFF', 0.4), maxWidth: 420, lineHeight: 1.5, fontWeight: 500, letterSpacing: -0.1 }}>
+              Initialize your monitoring core and gain unparalleled insights into your global network presence. 
+              Precision-engineered for the next generation of DevOps.
             </Typography>
 
-            <Stack direction="row" spacing={6} sx={{ pt: 4 }}>
+            <Stack direction="row" spacing={8} sx={{ pt: 6 }}>
               <Box>
-                <Globe size={20} color={alpha('#FFF', 0.2)} />
-                <Typography variant="h6" sx={{ mt: 1, fontWeight: 700, color: alpha('#FFF', 0.8) }}>Global</Typography>
-                <Typography variant="caption" sx={{ color: alpha('#FFF', 0.3), fontWeight: 600 }}>Network Presence</Typography>
+                <Globe size={24} color="#007AFF" />
+                <Typography variant="h5" sx={{ mt: 1.5, fontWeight: 800, color: '#FFFFFF', letterSpacing: -0.5 }}>Universal</Typography>
+                <Typography variant="caption" sx={{ color: alpha('#FFF', 0.3), fontWeight: 700, letterSpacing: 1 }}>NETWORK MAPPING</Typography>
               </Box>
               <Box>
-                <Zap size={20} color={alpha('#FFF', 0.2)} />
-                <Typography variant="h6" sx={{ mt: 1, fontWeight: 700, color: alpha('#FFF', 0.8) }}>Real-time</Typography>
-                <Typography variant="caption" sx={{ color: alpha('#FFF', 0.3), fontWeight: 600 }}>Latencies & Logs</Typography>
+                <Zap size={24} color="#00ffc3" />
+                <Typography variant="h5" sx={{ mt: 1.5, fontWeight: 800, color: '#FFFFFF', letterSpacing: -0.5 }}>Instant</Typography>
+                <Typography variant="caption" sx={{ color: alpha('#FFF', 0.3), fontWeight: 700, letterSpacing: 1 }}>REAL-TIME STREAMS</Typography>
               </Box>
             </Stack>
           </Stack>
         </Box>
 
-        <Box sx={{ opacity: 0.2 }}>
-          <Typography variant="caption" sx={{ letterSpacing: 2 }}>© 2026 ANALYTICA SYSTEMS</Typography>
+        <Box sx={{ opacity: 0.15 }}>
+          <Typography variant="caption" sx={{ letterSpacing: 3, fontWeight: 900 }}>ANALYTICA STUDIO — SECURE PROVISIONING</Typography>
         </Box>
       </Box>
 
@@ -153,9 +147,9 @@ const Register = () => {
         bgcolor: '#000'
       }}>
         <Box sx={{ width: '100%', maxWidth: 400 }}>
-          <Box sx={{ mb: 6 }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, letterSpacing: -1, mb: 1 }}>Create Account</Typography>
-            <Typography variant="body1" sx={{ color: alpha('#FFF', 0.4) }}>Join the fleet and start monitoring today.</Typography>
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: -0.5, mb: 1 }}>Create Account</Typography>
+            <Typography variant="body2" sx={{ color: alpha('#FFF', 0.4), fontWeight: 600 }}>Join the fleet and start monitoring today.</Typography>
           </Box>
 
           {error && <Alert severity="error" sx={{ mb: 4, borderRadius: 2, bgcolor: alpha('#FF3B30', 0.1), color: '#FF3B30', border: 'none' }}>
@@ -236,9 +230,9 @@ const Register = () => {
                     fontSize: '1rem', 
                     fontWeight: 700, 
                     bgcolor: '#007AFF', 
-                    borderRadius: '12px',
+                    borderRadius: 0.5, 
                     mt: 2,
-                    boxShadow: `0 8px 32px ${alpha('#007AFF', 0.3)}`,
+                    boxShadow: 'none',
                     '&:hover': { bgcolor: '#0062CC' }
                   }}
                 >

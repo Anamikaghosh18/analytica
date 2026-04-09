@@ -29,6 +29,7 @@ class APIMonitor(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="monitors")
     
+    last_checked = Column(DateTime, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
 class APICheck(Base):
@@ -36,12 +37,33 @@ class APICheck(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     monitor_id = Column(Integer, ForeignKey("api_monitors.id", ondelete="CASCADE"))
+    node_id = Column(Integer, ForeignKey("monitoring_nodes.id"), nullable=True)
     
     response_time_ms = Column(Float)
     status_code = Column(Integer)
     success = Column(Boolean)
     
     checked_at = Column(DateTime, server_default=func.now(), index=True)
+
+class MonitoringNode(Base):
+    __tablename__ = "monitoring_nodes"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(255), nullable=False) # e.g. US-East-1
+    region = Column(String(100), nullable=False)
+    provider = Column(String(100), default="AWS")
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+class Alert(Base):
+    __tablename__ = "alerts"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    monitor_id = Column(Integer, ForeignKey("api_monitors.id", ondelete="CASCADE"))
+    type = Column(String(50), default="latency") # latency, outage, etc.
+    message = Column(String(500))
+    resolved = Column(Boolean, default=False)
+    created_at = Column(DateTime, server_default=func.now())
 
 
     

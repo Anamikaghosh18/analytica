@@ -48,8 +48,13 @@ const Login = () => {
       height: '100vh',
       bgcolor: '#000000',
       color: '#FFFFFF',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      position: 'relative'
     }}>
+      {/* Global Studio Effects */}
+      <div className="studio-noise" />
+      <div className="studio-glow" />
+
       {/* Left Panel: Visual Identity (60%) */}
       <Box sx={{ 
         flex: 1.5, 
@@ -61,20 +66,9 @@ const Login = () => {
         px: { md: 8, lg: 12 },
         py: { md: 6, lg: 8 },
         overflow: 'hidden',
-        borderRight: `1px solid ${alpha('#FFFFFF', 0.05)}`,
+        borderRight: `1px solid ${alpha('#FFFFFF', 0.08)}`,
         background: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0)',
         backgroundSize: '32px 32px',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0, left: 0, right: 0, bottom: 0,
-          background: 'radial-gradient(circle at 50% 50%, rgba(0, 122, 255, 0.05) 0%, transparent 70%)',
-          animation: 'pulse 10s infinite alternate ease-in-out',
-        },
-        '@keyframes pulse': {
-          '0%': { opacity: 0.5, transform: 'scale(1)' },
-          '100%': { opacity: 1, transform: 'scale(1.2)' },
-        }
       }}>
         <Box sx={{ 
           position: 'absolute', 
@@ -83,52 +77,52 @@ const Login = () => {
           transform: 'translate(-50%, -50%)',
           width: '140%', 
           height: '140%',
-          opacity: 0.3,
-          background: 'radial-gradient(circle at center, rgba(0, 122, 255, 0.08) 0%, transparent 70%)',
+          opacity: 0.2,
+          background: 'radial-gradient(circle at center, rgba(0, 122, 255, 0.1) 0%, transparent 70%)',
           pointerEvents: 'none'
         }} />
 
         <Box sx={{ my: 'auto', position: 'relative', zIndex: 1 }}>
-          <Stack spacing={3}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Logo size={42} />
-              <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: -1, color: alpha('#FFF', 0.9) }}>Analytica</Typography>
+          <Stack spacing={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
+              <Logo size={48} />
+              <Typography variant="h4" sx={{ fontWeight: 900, letterSpacing: -2, color: '#FFFFFF' }}>Analytica</Typography>
             </Box>
             
             <Typography variant="h1" sx={{ 
-              fontSize: { xs: '2rem', sm: '2.5rem', md: 'clamp(2.5rem, 5vw, 4.5rem)' }, 
+              fontSize: { xs: '1.5rem', sm: '2rem', md: 'clamp(2rem, 4vw, 3rem)' }, 
               fontWeight: 900, 
-              lineHeight: 1.2, 
-              letterSpacing: -4,
-              background: 'linear-gradient(180deg, #FFFFFF 20%, rgba(255,255,255,0.2) 100%)',
+              lineHeight: 1.1, 
+              letterSpacing: -3,
+              background: 'linear-gradient(180deg, #FFFFFF 30%, rgba(255,255,255,0.1) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
-              Welcome Back<br />Commander.
+              Re-establish<br />Command Link.
             </Typography>
 
-            <Typography variant="h6" sx={{ color: alpha('#FFF', 0.4), maxWidth: 450, fontWeight: 400, lineHeight: 1.6 }}>
-              Re-establishing secure link to your monitoring nodes. 
-              All systems verified and operational.
+            <Typography variant="body1" sx={{ color: alpha('#FFF', 0.4), maxWidth: 400, fontWeight: 500, lineHeight: 1.5, letterSpacing: -0.1 }}>
+              Secure authentication layer for distributed infrastructure nodes. 
+              Verified military-grade monitoring protocols active.
             </Typography>
 
-            <Stack direction="row" spacing={6} sx={{ pt: 4 }}>
+            <Stack direction="row" spacing={8} sx={{ pt: 6 }}>
               <Box>
-                <Cpu size={20} color={alpha('#FFF', 0.2)} />
-                <Typography variant="h6" sx={{ mt: 1, fontWeight: 700, color: alpha('#FFF', 0.8) }}>Active</Typography>
-                <Typography variant="caption" sx={{ color: alpha('#FFF', 0.3), fontWeight: 600 }}>Monitoring Core</Typography>
+                <Cpu size={24} color="#007AFF" />
+                <Typography variant="h5" sx={{ mt: 1.5, fontWeight: 800, color: '#FFFFFF', letterSpacing: -0.5 }}>Clinical</Typography>
+                <Typography variant="caption" sx={{ color: alpha('#FFF', 0.3), fontWeight: 700, letterSpacing: 1 }}>TELEMETRY HUB</Typography>
               </Box>
               <Box>
-                <Shield size={20} color={alpha('#FFF', 0.2)} />
-                <Typography variant="h6" sx={{ mt: 1, fontWeight: 700, color: alpha('#FFF', 0.8) }}>Secure</Typography>
-                <Typography variant="caption" sx={{ color: alpha('#FFF', 0.3), fontWeight: 600 }}>AES-256 Link</Typography>
+                <Shield size={24} color="#00ffc3" />
+                <Typography variant="h5" sx={{ mt: 1.5, fontWeight: 800, color: '#FFFFFF', letterSpacing: -0.5 }}>Encrypted</Typography>
+                <Typography variant="caption" sx={{ color: alpha('#FFF', 0.3), fontWeight: 700, letterSpacing: 1 }}>AES-512 TUNNEL</Typography>
               </Box>
             </Stack>
           </Stack>
         </Box>
 
-        <Box sx={{ opacity: 0.2 }}>
-          <Typography variant="caption" sx={{ letterSpacing: 2 }}>© 2026 ANALYTICA SYSTEMS</Typography>
+        <Box sx={{ opacity: 0.15 }}>
+          <Typography variant="caption" sx={{ letterSpacing: 3, fontWeight: 900 }}>ANALYTICA STUDIO — v4.0 CORE</Typography>
         </Box>
       </Box>
 
@@ -139,12 +133,14 @@ const Login = () => {
         alignItems: 'center', 
         justifyContent: 'center',
         px: { xs: 3, md: 8 },
-        bgcolor: '#000'
+        bgcolor: '#000',
+        position: 'relative'
       }}>
+
         <Box sx={{ width: '100%', maxWidth: 400 }}>
-          <Box sx={{ mb: 6 }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, letterSpacing: -1, mb: 1 }}>Sign In</Typography>
-            <Typography variant="body1" sx={{ color: alpha('#FFF', 0.4) }}>Authenticate to access your dashboard.</Typography>
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: -0.5, mb: 1 }}>Sign In</Typography>
+            <Typography variant="body2" sx={{ color: alpha('#FFF', 0.4), fontWeight: 600 }}>Authenticate to access your dashboard.</Typography>
           </Box>
 
           {error && <Alert severity="error" sx={{ mb: 4, borderRadius: 2, bgcolor: alpha('#FF3B30', 0.1), color: '#FF3B30', border: 'none' }}>
@@ -209,9 +205,9 @@ const Login = () => {
                     fontSize: '1rem', 
                     fontWeight: 700, 
                     bgcolor: '#007AFF', 
-                    borderRadius: '12px',
+                    borderRadius: 0.5, 
                     mt: 2,
-                    boxShadow: `0 8px 32px ${alpha('#007AFF', 0.3)}`,
+                    boxShadow: 'none',
                     '&:hover': { bgcolor: '#0062CC' }
                   }}
                 >

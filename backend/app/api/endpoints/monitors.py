@@ -18,6 +18,7 @@ def create_monitor(
         name=data.name,
         url=data.url,
         method=data.method or "GET",
+        check_interval_seconds=data.check_interval_seconds or 60,
         owner_id=current_user.id
     )
     db.add(monitor)
