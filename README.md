@@ -1,39 +1,50 @@
-# Analytica Platform 🛡️
+# Analytica
 
-Analytica is a real-time monitoring and analytics platform featuring a FastAPI backend and a React/Vite frontend.
+<p align="center">
+  <img src="https://img.shields.io/badge/Production-Live-success?style=for-the-badge&logo=vercel&color=000" alt="Vercel">
+  <img src="https://img.shields.io/badge/Powered_By-FastAPI-blue?style=for-the-badge&logo=fastapi&color=46E3B7" alt="FastAPI">
+  <a href="https://analytica-gules.vercel.app"><img src="https://img.shields.io/badge/Visit-Platform-blue?style=for-the-badge&logo=google-chrome&color=4285F4" alt="Visit Website"></a>
+</p>
 
-## 🐳 Dockerized Setup
+Analytica is a high-performance monitoring ecosystem built for real-time telemetry tracking and proactive system intelligence. Designed for precision, speed, and absolute clarity—supporting both cloud deployments and **local API tracking**.
 
-The project is fully containerized for both development and production deployment.
+<p align="center">
+  <table align="center">
+    <tr>
+      <td><img width="400" alt="Screenshot 2026-04-10 101704" src="https://github.com/user-attachments/assets/8cc91463-60d0-4a57-a48d-5163b6e6b1ad" />
+</td>
+      <td><img width="400" alt="Screenshot 2026-04-10 101638" src="https://github.com/user-attachments/assets/25cb01f9-babf-42a1-bbf1-fe684827b546" />
+</td>
+    </tr>
+  </table>
+</p>
 
-### Prerequisites
-- Docker & Docker Compose
+## 🚀 Access the Platform
 
-### Quick Start
-1. **Configure Environment**:
-   Copy the example environment file and fill in your Render/Vercel keys:
-   ```bash
-   cp backend/.env.example backend/.env
-   ```
-2. **Launch Services**:
-   ```bash
-   docker compose up --build
-   ```
-   - **Frontend**: http://localhost
-   - **Backend API**: http://localhost:8000/api
-   - **API Docs**: http://localhost:8000/docs
+Unlock the full potential of your system with our live endpoints:
 
-### Project Structure
-- `/backend`: FastAPI service with SQLAlchemy 2.0 and Alembic.
-- `/frontend`: React + Vite with Nginx production serving.
-- `docker-compose.yml`: Orchestrates Postgres, Backend, and Frontend.
+*   **⚡ Access Website:** [analytica-gules.vercel.app](https://analytica-gules.vercel.app)
 
----
+## 🔥 Key Intelligence Features
 
-## 🚀 Deployment
+*   **⚡ Sub-Second Telemetry**: High-frequency data ingestion and visualization with zero lag.
+*   **🏠 Hybrid Tracking**: Seamlessly monitor both **Localhost Development APIs** and **Deployed Cloud Services** in a single view.
+*   **🧠 COCO Integration**: A built-in AI intelligence sidebar that analyzes your performance data in real-time.
+*   **🛰️ Global Node Network**: Monitor your services across multiple regions from a single, unified interface.
+*   **🎨 Compact Industrial UI**: A premium, high-density design system built for professional monitoring.
+*   **🔒 Secure Protocol**: Industry-standard Google OAuth and JWT protection for all sensitive data.
 
-### Backend (Render)
-The backend includes a production-optimized `Dockerfile`. Simply connect your GitHub repo to Render and choose **Docker** as the runtime.
+### 📦 Quick Start (Developers)
+<details>
+<summary>Launch Sandbox Configuration</summary>
 
-### Frontend (Vercel)
-The project includes a `vercel.json` for seamless deployment. Vercel will handle the build and proxy requests correctly to your Render backend.
+```bash
+# Clone and Initialize
+docker compose up --build
+```
+</details>
+
+<p align="center">
+  Built with ❤️ by <b>Anamika Ghosh</b><br>
+  Copyright © 2026 <b>Analytica</b> • All rights reserved.
+</p>
