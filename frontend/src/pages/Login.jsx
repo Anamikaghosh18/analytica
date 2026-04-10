@@ -46,7 +46,7 @@ const Login = () => {
   const googleSignIn = useGoogleLogin({
     onSuccess: handleGoogleSuccess,
     onError: () => setError('Social entry failed'),
-    use_fedcm_for_prompt: true,
+    flow: 'implicit',
   });
 
   return (
