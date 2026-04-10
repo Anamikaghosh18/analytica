@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Alert, Link, Stack, alpha, Divider } from '@mui/material';
+import { Box, Typography, TextField, Button, Alert, Link, Stack, alpha, Divider, IconButton, InputAdornment } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useGoogleLogin } from '@react-oauth/google';
-import { ShieldCheck, User, ArrowRight, Activity, Cpu, Shield } from 'lucide-react';
+import { ShieldCheck, User, ArrowRight, Activity, Cpu, Shield, Eye, EyeOff } from 'lucide-react';
 import Logo from '../components/Logo';
 
 const Login = () => {
@@ -13,6 +13,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -209,12 +211,23 @@ const Login = () => {
                   fullWidth
                   variant="standard"
                   placeholder="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
-                  slotProps={{ input: { sx: { fontSize: '1.1rem', py: 1, color: '#FFF' } } }}
+                  slotProps={{ 
+                    input: { 
+                        sx: { fontSize: '1.1rem', py: 1, color: '#FFF' },
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton onClick={() => setShowPassword(!showPassword)} sx={{ color: alpha('#FFF', 0.2) }}>
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </IconButton>
+                            </InputAdornment>
+                        )
+                    } 
+                  }}
                   sx={{ 
                     '& .MuiInput-underline:before': { borderColor: alpha('#FFF', 0.1) },
                     '& .MuiInput-underline:hover:before': { borderColor: alpha('#FFF', 0.2) + ' !important' },

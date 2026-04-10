@@ -17,16 +17,17 @@ import {
 import { 
   Globe, Zap, Cpu, Server, Terminal, AlertTriangle, Activity, Clock, CheckCircle2,
   XCircle, Monitor, Search, Trash2, X, MapPin, RefreshCw, Plus, Wifi, WifiOff,
-  Shield, HelpCircle, ChevronRight, ChevronLeft
+  Shield, HelpCircle, ChevronRight, ChevronLeft, Sparkles, Brain, Activity as BrainActivity, Send
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import api from '../services/api';
 import BentoCard from '../components/BentoCard';
+import CocoSidebar from '../components/CocoSidebar';
 
 // WebSocket connects via Vite proxy (/ws → ws://127.0.0.1:8000/ws) to avoid CORS
-const WS_URL = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/ws/telemetry`;
+const WS_URL = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/api/ws/telemetry`;
 
 const StatusDot = ({ online }) => (
   <Box sx={{
@@ -37,6 +38,14 @@ const StatusDot = ({ online }) => (
     flexShrink: 0
   }} />
 );
+
+const tourSteps = [
+  { title: "Control Center", content: "Key health stats for your entire system.", targetId: "tour-header", position: "bottom" },
+  { title: "Speed Pulse", content: "Real-time performance trends. Lower lines are faster!", targetId: "tour-chart", position: "top" },
+  { title: "Active Sites List", content: "Compare different websites instantly in the chart above.", targetId: "tour-inventory", position: "top" },
+  { title: "Live Activity Feed", content: "See exactly what our nodes are seeing, second by second.", targetId: "tour-feed", position: "top" },
+  { title: "New Website", content: "Monitoring a new URL takes less than 10 seconds.", targetId: "tour-add-button", position: "bottom" }
+];
 
 const Dashboard = () => {
   const [summary, setSummary] = useState(null);
@@ -57,7 +66,9 @@ const Dashboard = () => {
   const [showMonitorModal, setShowMonitorModal] = useState(false);
   const [showInventoryDrawer, setShowInventoryDrawer] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [modalLoading, setModalLoading] = useState(false);
   const [newMonitor, setNewMonitor] = useState({ name: '', url: '', method: 'GET', check_interval_seconds: 60, headersText: '', is_public: false });
+  const [showAiModal, setShowAiModal] = useState(false);
 
   const socketRef = useRef(null);
 
@@ -123,34 +134,56 @@ const Dashboard = () => {
     return () => { isMounted = false; if (socketRef.current) socketRef.current.close(); };
   }, []);
 
-  const tourSteps = [
-    { title: "Control Center", content: "Key health stats for your entire system.", targetId: "tour-header", position: "bottom" },
-    { title: "Speed Pulse", content: "Real-time performance trends. Lower lines are faster!", targetId: "tour-chart", position: "top" },
-    { title: "Active Sites List", content: "Compare different websites instantly in the chart above.", targetId: "tour-inventory", position: "top" },
-    { title: "Live Activity Feed", content: "See exactly what our nodes are seeing, second by second.", targetId: "tour-feed", position: "top" },
-    { title: "New Website", content: "Monitoring a new URL takes less than 10 seconds.", targetId: "tour-add-button", position: "bottom" }
-  ];
 
   useEffect(() => {
     if (showTour) {
-      const target = document.getElementById(tourSteps[tourStep].targetId);
+      const step = tourSteps[tourStep];
+      const target = document.getElementById(step.targetId);
       if (target) {
         const rect = target.getBoundingClientRect();
-        const pos = tourSteps[tourStep].position;
-        if (pos === 'bottom') setPopoverPos({ top: rect.bottom + 20, left: Math.max(20, rect.left + rect.width / 2 - 200) });
-        else setPopoverPos({ top: rect.top - 260, left: Math.max(20, rect.left + rect.width / 2 - 200) });
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const pos = step.position;
+        if (pos === 'bottom') setPopoverPos({ top: window.scrollY + rect.bottom + 20, left: Math.max(20, rect.left + rect.width / 2 - 200) });
+        else setPopoverPos({ top: window.scrollY + rect.top - 260, left: Math.max(20, rect.left + rect.width / 2 - 200) });
+        
+        // Only scroll if the target is not visible to prevent jitter
+        const isVisible = (rect.top >= 0 && rect.bottom <= window.innerHeight);
+        if (!isVisible) {
+           target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       }
     }
   }, [showTour, tourStep]);
 
   const handleMonitorSubmit = async () => {
+    if (!newMonitor.name || !newMonitor.url) {
+      setSnackbar({ open: true, message: "Please provide a name and target URL", severity: 'warning' });
+      return;
+    }
+    
+    setModalLoading(true);
     try {
-      const res = await api.post('/monitors/', { ...newMonitor, headers: newMonitor.headersText ? JSON.parse(newMonitor.headersText) : null });
+      let headers = null;
+      if (newMonitor.headersText) {
+        try {
+          headers = JSON.parse(newMonitor.headersText);
+        } catch (e) {
+          setSnackbar({ open: true, message: "Invalid JSON format in headers", severity: 'error' });
+          setModalLoading(false);
+          return;
+        }
+      }
+
+      await api.post('/monitors/', { ...newMonitor, headers });
       setShowMonitorModal(false);
+      setNewMonitor({ name: '', url: '', method: 'GET', check_interval_seconds: 60, headersText: '', is_public: false });
       setSnackbar({ open: true, message: `"${newMonitor.name}" is now being monitored!`, severity: 'success' });
       fetchData();
-    } catch (err) { }
+    } catch (err) { 
+      const errorMsg = err.response?.data?.detail || "Failed to initialize monitor. Check your backend status.";
+      setSnackbar({ open: true, message: errorMsg, severity: 'error' });
+    } finally {
+      setModalLoading(false);
+    }
   };
 
   const finishTour = () => { setShowTour(false); localStorage.setItem('analytica_tour_seen', 'true'); };
@@ -162,6 +195,7 @@ const Dashboard = () => {
       fetchData();
     } catch (err) {}
   };
+
 
   if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}><CircularProgress thickness={2} sx={{ color: '#007AFF' }} /></Box>;
 
@@ -193,10 +227,11 @@ const Dashboard = () => {
           { label: 'Telemetry', value: wsConnected ? 'LIVE' : 'OFF', info: wsConnected ? 'Synced with stream' : 'Link inactive', icon: <Activity size={18} />, color: wsConnected ? '#00ffc3' : '#FF375F' },
           { label: 'Watched Sites', value: monitors.length, info: 'Total inventory', icon: <Globe size={18} />, color: '#BF5AF2' },
         ].map((kpi) => (
-          <BentoCard key={kpi.label} sx={{ p: 4 }}>
+          <BentoCard key={kpi.label} sx={{ p: 4, cursor: kpi.label === 'Telemetry' ? 'pointer' : 'default', '&:hover': kpi.label === 'Telemetry' ? { bgcolor: alpha('#007AFF', 0.05) } : {} }} onClick={() => kpi.label === 'Telemetry' ? fetchAIDiagnosis() : null}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
               <Box sx={{ color: kpi.color }}>{kpi.icon}</Box>
               <Typography sx={{ color: alpha('#FFFFFF', 0.3), fontWeight: 900, fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: 1.5 }}>{kpi.label}</Typography>
+              {kpi.label === 'Telemetry' && <Brain size={12} color="#007AFF" style={{ marginLeft: 'auto' }} />}
             </Box>
             <Typography variant="h3" sx={{ color: '#FFFFFF', fontWeight: 900, lineHeight: 1, mb: 1 }}>{kpi.value}</Typography>
             <Typography variant="caption" sx={{ color: alpha('#FFFFFF', 0.15), fontWeight: 600 }}>{kpi.info}</Typography>
@@ -228,10 +263,9 @@ const Dashboard = () => {
              </Box>
         </BentoCard>
 
-        {/* 📋 THE SCROLLABLE FIX (NO DISTORTION) */}
         <BentoCard id="tour-feed" sx={{ gridColumn: 'span 12', p: 4, maxHeight: 400, display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}><Terminal size={20} color="#BF5AF2" /><Typography sx={{ color: alpha('#FFFFFF', 0.8), fontWeight: 900, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: 2 }}>Live Diagnostic Feed</Typography></Box>
-            <Box sx={{ flex: 1, overflowY: 'auto', p: 3, bgcolor: '#050505', borderRadius: 2, border: `1px solid ${alpha('#fff', 0.03)}`, fontFamily: '"JetBrains Mono", monospace', '&::-webkit-scrollbar': { width: 5 }, '&::-webkit-scrollbar-thumb': { bgcolor: alpha('#fff', 0.05), borderRadius: 10 } }}>
+            <Box sx={{ flex: 1, overflowY: 'auto', p: 3, bgcolor: '#050505', borderRadius: 2, border: `1px solid ${alpha('#fff', 0.03)}`, fontFamily: '"JetBrains Mono", monospace' }}>
                  {telemetryLogs.map((log, i) => (
                     <Box key={i} sx={{ display: 'flex', gap: 3, mb: 1, opacity: Math.max(0.1, 1 - i * 0.05) }}>
                         <Typography variant="caption" sx={{ color: alpha('#fff', 0.1), minWidth: 80 }}>[{new Date().toLocaleTimeString()}]</Typography>
@@ -239,12 +273,16 @@ const Dashboard = () => {
                         <Typography variant="caption" sx={{ color: log.success ? '#00ffc3' : '#ff375f', fontWeight: 800 }}>{log.success ? 'PASSED' : 'DENIED'} · {log.response_time_ms}ms</Typography>
                     </Box>
                  ))}
+                 {telemetryLogs.length === 0 && <Typography variant="caption" sx={{ color: alpha('#fff', 0.1) }}>Waiting for telemetry stream...</Typography>}
             </Box>
         </BentoCard>
       </Box>
 
+      {/* 🧠 COCO INTELLIGENCE SIDEBAR (COPILOT STYLE) */}
+      <CocoSidebar open={showAiModal} onClose={() => setShowAiModal(false)} />
+
       {/* ── Watch New Site Modal ── */}
-      <Dialog open={showMonitorModal} onClose={() => setShowMonitorModal(false)} PaperProps={{ sx: { bgcolor: '#0F0F0F', backgroundImage: 'none', border: `1px solid ${alpha('#FFFFFF', 0.1)}`, borderRadius: 2, minWidth: 450 } }}>
+      <Dialog open={showMonitorModal} onClose={() => setShowMonitorModal(false)} slotProps={{ paper: { sx: { bgcolor: '#0F0F0F', backgroundImage: 'none', border: `1px solid ${alpha('#FFFFFF', 0.1)}`, borderRadius: 2, minWidth: 450 } } }}>
         <DialogTitle sx={{ color: '#fff', fontWeight: 900 }}>Watch New Infrastructure</DialogTitle>
         <DialogContent>
             <Stack spacing={3} sx={{ mt: 1 }}>
@@ -257,13 +295,20 @@ const Dashboard = () => {
             </Stack>
         </DialogContent>
         <DialogActions sx={{ p: 3 }}>
-            <Button onClick={() => setShowMonitorModal(false)} sx={{ color: alpha('#fff', 0.2) }}>Cancel</Button>
-            <Button onClick={handleMonitorSubmit} variant="contained" sx={{ bgcolor: '#007AFF', fontWeight: 900 }}>Initialize Monitor</Button>
+            <Button onClick={() => setShowMonitorModal(false)} disabled={modalLoading} sx={{ color: alpha('#fff', 0.2) }}>Cancel</Button>
+            <Button 
+                onClick={handleMonitorSubmit} 
+                variant="contained" 
+                disabled={modalLoading}
+                sx={{ bgcolor: '#007AFF', fontWeight: 900 }}
+            >
+                {modalLoading ? 'Initializing...' : 'Initialize Monitor'}
+            </Button>
         </DialogActions>
       </Dialog>
 
       {/* ── Inventory Drawer ── */}
-      <Drawer anchor="right" open={showInventoryDrawer} onClose={() => setShowInventoryDrawer(false)} PaperProps={{ sx: { width: 500, bgcolor: '#0A0A0A', borderLeft: `1px solid ${alpha('#fff', 0.05)}`, backgroundImage: 'none' } }}>
+      <Drawer anchor="right" open={showInventoryDrawer} onClose={() => setShowInventoryDrawer(false)} slotProps={{ paper: { sx: { width: 500, bgcolor: '#0A0A0A', borderLeft: `1px solid ${alpha('#fff', 0.05)}`, backgroundImage: 'none' } } }}>
         <Box sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 6 }}>
                 <Typography variant="h5" sx={{ fontWeight: 900, color: '#fff' }}>Site Inventory</Typography>
@@ -291,6 +336,78 @@ const Dashboard = () => {
       <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
         <MuiAlert severity={snackbar.severity} sx={{ width: '100%', fontWeight: 700, borderRadius: 2 }}>{snackbar.message}</MuiAlert>
       </Snackbar>
+
+      {/* ── Guided Tour System ── */}
+      {showTour && (
+        <Portal>
+          <Box sx={{
+            position: 'fixed',
+            top: popoverPos.top,
+            left: popoverPos.left,
+            zIndex: 9999,
+            width: 320,
+            p: 3,
+            bgcolor: '#111',
+            border: `1px solid ${alpha('#007AFF', 0.5)}`,
+            borderRadius: 3,
+            boxShadow: `0 20px 40px ${alpha('#000', 0.8)}, 0 0 20px ${alpha('#007AFF', 0.1)}`,
+            backdropFilter: 'blur(20px)',
+          }}>
+            <Typography sx={{ color: '#007AFF', fontWeight: 900, fontSize: '0.65rem', letterSpacing: 2, mb: 1, textTransform: 'uppercase' }}>
+                System Guide — Step {tourStep + 1}/{tourSteps.length}
+            </Typography>
+            <Typography variant="h6" sx={{ color: '#fff', fontWeight: 900, mb: 1.5, letterSpacing: -0.5 }}>
+                {tourSteps[tourStep].title}
+            </Typography>
+            <Typography variant="body2" sx={{ color: alpha('#fff', 0.5), mb: 3, fontWeight: 500, lineHeight: 1.6 }}>
+                {tourSteps[tourStep].content}
+            </Typography>
+            
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Button size="small" onClick={() => setShowTour(false)} sx={{ color: alpha('#fff', 0.2), fontWeight: 800 }}>Skip</Button>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button 
+                        size="small" 
+                        disabled={tourStep === 0} 
+                        onClick={() => setTourStep(s => s - 1)}
+                        sx={{ color: '#fff', minWidth: 40 }}
+                    >
+                        <ChevronLeft size={18} />
+                    </Button>
+                    <Button 
+                        size="small" 
+                        variant="contained"
+                        onClick={() => tourStep === tourSteps.length - 1 ? finishTour() : setTourStep(s => s + 1)}
+                        sx={{ bgcolor: '#007AFF', fontWeight: 900, px: 2 }}
+                    >
+                        {tourStep === tourSteps.length - 1 ? 'Finish' : 'Next'}
+                    </Button>
+                </Box>
+            </Box>
+          </Box>
+        </Portal>
+      )}
+
+      {/* ── Floating COCO Intelligence Hub ── */}
+      <Box sx={{ position: 'fixed', bottom: 30, right: 30, zIndex: 1000 }}>
+          <IconButton 
+            onClick={() => setShowAiModal(true)}
+            sx={{ 
+                width: 56, 
+                height: 56, 
+                borderRadius: '50%', 
+                bgcolor: '#007AFF',
+                color: '#fff', 
+                transition: 'all 0.2s',
+                '&:hover': { 
+                    bgcolor: alpha('#007AFF', 0.8),
+                    transform: 'scale(1.05)'
+                }
+            }}
+          >
+              <Brain size={28} />
+          </IconButton>
+      </Box>
 
       <style>{`
         .animate-spin { animation: spin 1s linear infinite; }

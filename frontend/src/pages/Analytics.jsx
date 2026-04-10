@@ -19,6 +19,8 @@ import {
 } from 'recharts';
 import api from '../services/api';
 import BentoCard from '../components/BentoCard';
+import CocoSidebar from '../components/CocoSidebar';
+import { Brain } from 'lucide-react';
 
 const Analytics = () => {
   const [loading, setLoading] = useState(true);
@@ -33,6 +35,7 @@ const Analytics = () => {
   const [tourStep, setTourStep] = useState(0);
   const [popoverPos, setPopoverPos] = useState({ top: 0, left: 0 });
   const [timeRange, setTimeRange] = useState('24h');
+  const [showAi, setShowAi] = useState(false);
 
   const tourSteps = [
     { title: "Health Insights", content: "Deep data on your website's worldwide performance.", targetId: "tour-ana-header", position: "bottom" },
@@ -198,6 +201,26 @@ const Analytics = () => {
             </Box>
         </Portal>
       )}
+      {/* ── COCO Intelligence ── */}
+      <CocoSidebar open={showAi} onClose={() => setShowAi(false)} />
+      
+      <Box sx={{ position: 'fixed', bottom: 30, right: 30, zIndex: 1000 }}>
+          <IconButton 
+            onClick={() => setShowAi(true)}
+            sx={{ 
+                width: 56, 
+                height: 56, 
+                borderRadius: '50%', 
+                bgcolor: '#007AFF',
+                color: '#fff', 
+                transition: 'all 0.2s',
+                '&:hover': { bgcolor: alpha('#007AFF', 0.8), transform: 'scale(1.05)' }
+            }}
+          >
+              <Brain size={28} />
+          </IconButton>
+      </Box>
+
       <style>{`
         .animate-spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

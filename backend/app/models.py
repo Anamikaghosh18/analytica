@@ -14,6 +14,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     api_key = Column(String(255), unique=True, index=True, nullable=True)
     notification_prefs = Column(String(1000), default='{"email": true, "push": false, "outages": true, "weekly": true}') # JSON string
+    created_at = Column(DateTime, server_default=func.now())
     
     monitors = relationship("APIMonitor", back_populates="owner")
 
@@ -48,6 +49,8 @@ class APICheck(Base):
     success = Column(Boolean)
     
     checked_at = Column(DateTime, server_default=func.now(), index=True)
+    
+    monitor = relationship("APIMonitor")
 
 class MonitoringNode(Base):
     __tablename__ = "monitoring_nodes"

@@ -1,5 +1,9 @@
 from fastapi import FastAPI
 import os
+from dotenv import load_dotenv
+
+# Initialize environment variables with override enabled
+load_dotenv(override=True)
 from contextlib import asynccontextmanager
 from app.api.api import api_router
 from app.core.monitor_engine import start_monitoring
@@ -50,7 +54,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(api_router)
+app.include_router(api_router, prefix="/api")
 
 @app.get("/")
 async def root():

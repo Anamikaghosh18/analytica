@@ -1,9 +1,10 @@
 import React from 'react';
 import { Box, alpha } from '@mui/material';
 
-const BentoCard = ({ children, sx = {}, height = 'auto', noPadding = false }) => {
+const BentoCard = ({ children, sx = {}, height = 'auto', noPadding = false, ...props }) => {
   return (
     <Box 
+      {...props}
       sx={{ 
         height: height,
         position: 'relative',

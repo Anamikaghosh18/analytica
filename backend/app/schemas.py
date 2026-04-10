@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
+from datetime import datetime
 
 # Token schemas
 class Token(BaseModel):
@@ -21,6 +22,7 @@ class UserResponse(UserBase):
     is_active: bool
     api_key: Optional[str] = None
     notification_prefs: Optional[str] = None
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

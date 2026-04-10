@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Alert, Link, Stack, alpha, Divider, Container } from '@mui/material';
+import { Box, Typography, TextField, Button, Alert, Link, Stack, alpha, Divider, Container, IconButton, InputAdornment } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useGoogleLogin } from '@react-oauth/google';
-import { ShieldCheck, ArrowRight, Globe, Zap } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Globe, Zap, Eye, EyeOff } from 'lucide-react';
 import Logo from '../components/Logo';
 
 const Register = () => {
@@ -15,6 +15,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const { register, googleLogin } = useAuth();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -223,19 +224,30 @@ const Register = () => {
                     fullWidth
                     variant="standard"
                     placeholder="Password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={loading || success}
-                    slotProps={{ input: { sx: { fontSize: '1.1rem', py: 1, color: '#FFF' } } }}
+                    slotProps={{ 
+                        input: { 
+                            sx: { fontSize: '1.1rem', py: 1, color: '#FFF' },
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={() => setShowPassword(!showPassword)} sx={{ color: alpha('#FFF', 0.2) }}>
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        } 
+                    }}
                     sx={{ '& .MuiInput-underline:before': { borderColor: alpha('#FFF', 0.1) } }}
                   />
                   <TextField
                     fullWidth
                     variant="standard"
                     placeholder="Confirm"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
