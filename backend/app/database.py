@@ -30,8 +30,8 @@ def create_db_engine():
     
    
     if settings.environment == "production":
-        
-        if settings.database_url and "postgres.railway" not in settings.database_url:  
+        # Render and most cloud providers require SSL for external connections
+        if settings.database_url and "localhost" not in settings.database_url:
             engine_kwargs["connect_args"] = {
                 "sslmode": "require"
             }

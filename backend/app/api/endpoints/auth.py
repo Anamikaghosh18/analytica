@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-import requests as http_requests
+import httpx
 from app.database import get_db
 from app.models import User
 from app.schemas import UserCreate, UserResponse, Token, PasswordUpdate
@@ -29,7 +29,7 @@ def google_login(body: GoogleLoginRequest, db: Session = Depends(get_db)):
     """
     try:
         # Verify the access token by fetching the user’s profile from Google
-        resp = http_requests.get(
+        resp = httpx.get(
             "https://www.googleapis.com/oauth2/v3/userinfo",
             headers={"Authorization": f"Bearer {body.access_token}"},
             timeout=10,

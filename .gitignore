@@ -104,6 +104,11 @@ ENV/
 env.bak/
 venv.bak/
 
+# Databases
+*.db
+*.sqlite
+backend/analytica.db
+
 # Spyder project settings
 .spyderproject
 .spyproject
